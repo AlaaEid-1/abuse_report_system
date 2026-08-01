@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // 1. Super Admin
-        User::updateOrCreate(
+        User::firstOrCreate(
             ['email' => 'superadmin@safevoice.org'],
             [
                 'name' => 'Super Administrator',
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
         );
 
         // 2. Admin
-        User::updateOrCreate(
+        User::firstOrCreate(
             ['email' => 'admin@safevoice.org'],
             [
                 'name' => 'Compliance Manager',
@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
         );
 
         // 3. Lead Investigator
-        User::updateOrCreate(
+        User::firstOrCreate(
             ['email' => 'investigator@safevoice.org'],
             [
                 'name' => 'Lead Investigator',

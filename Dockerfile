@@ -15,6 +15,7 @@ RUN npm ci || npm install
 COPY vite.config.js postcss.config.js tailwind.config.js ./
 COPY resources/ ./resources/
 COPY public/ ./public/
+COPY app/ ./app/
 
 # Build production assets into public/build
 RUN npm run build

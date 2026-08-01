@@ -14,7 +14,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategorySeeder::class,
             UserSeeder::class,
-            ReportSeeder::class,
         ]);
+
+        if (app()->environment('local', 'testing')) {
+            $this->call([
+                ReportSeeder::class,
+            ]);
+        }
     }
 }
