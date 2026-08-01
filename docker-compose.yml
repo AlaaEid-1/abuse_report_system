@@ -1,0 +1,74 @@
+name: safevoice-platform
+
+services:
+  # ----------------------------------------------------------------------------
+  # Laravel 13 Application Service (PHP 8.4 + Apache)
+  # ----------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: safevoice_app
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    environment:
+      APP_NAME: "${APP_NAME:-SafeVoice}"
+      APP_ENV: "${APP_ENV:-local}"
+      APP_KEY: "${APP_KEY:-base64:X8vN9sQ2e4R6t8Y1u3I5o7P9a1S3d5F7g9H1j3K5l7M=}"
+      APP_DEBUG: "${APP_DEBUG:-true}"
+      APP_URL: "${APP_URL:-http://localhost:8000}"
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: "${DB_DATABASE:-safevoice}"
+      DB_USERNAME: "${DB_USERNAME:-safevoice_user}"
+      DB_PASSWORD: "${DB_PASSWORD:-safevoice_secret}"
+      SESSION_DRIVER: database
+      CACHE_STORE: database
+      QUEUE_CONNECTION: database
+      RUN_MIGRATIONS: "true"
+    volumes:
+      - app_storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - safevoice_network
+
+  # ----------------------------------------------------------------------------
+  # Database Service (MySQL 8.4)
+  # ----------------------------------------------------------------------------
+  db:
+    image: mysql:8.4
+    container_name: safevoice_db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "${DB_DATABASE:-safevoice}"
+      MYSQL_USER: "${DB_USERNAME:-safevoice_user}"
+      MYSQL_PASSWORD: "${DB_PASSWORD:-safevoice_secret}"
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:-root_secret}"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$MYSQL_ROOT_PASSWORD || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - safevoice_network
+
+# ------------------------------------------------------------------------------
+# Persistent Volumes & Private Network Configuration
+# ------------------------------------------------------------------------------
+volumes:
+  mysql_data:
+    driver: local
+  app_storage:
+    driver: local
+
+networks:
+  safevoice_network:
+    driver: bridge
