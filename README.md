@@ -73,14 +73,6 @@ Secure and Anonymous Abuse Reporting System
    php artisan serve
    npm run dev
    ```
-
-### 🔑 Default Admin Accounts (After Seeding):
-| Role | Email | Password |
-| :--- | :--- | :--- |
-| **Super Admin** | superadmin@safevoice.org | `Password123!` |
-| **Admin** | admin@safevoice.org | `Password123!` |
-| **Investigator** | investigator@safevoice.org | `Password123!` |
-
 ---
 
 ## 🐳 Production Deployment (Docker)
